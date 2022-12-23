@@ -1,7 +1,13 @@
 "use strict";
 
-// Selecting Elements
+//************************************************/
+//************   Selecting Elements   ************/
+//************************************************/
 
+const players = [
+  document.querySelector(".player--0"),
+  document.querySelector(".player--1"),
+];
 const scoreEl = [
   document.getElementById("score--0"),
   document.getElementById("score--1"),
@@ -17,15 +23,19 @@ const btnNewEl = document.querySelector(".btn--new");
 const btnRollEl = document.querySelector(".btn--roll");
 const btnHoldEl = document.querySelector(".btn--hold");
 
+//************************************************/
+//**********   Initializing variables   **********/
+//************************************************/
 let activePlayer = 0;
 let currentScore = [0, 0];
 let dice = 0;
-// Initializing variables
 scoreEl[0].textContent = "0";
 scoreEl[1].textContent = "0";
 diceEl.classList.add("hidden");
 
-// Rolling dice functionality
+//******************************************/
+//**********   Event Listeners   ***********/
+//******************************************/
 btnRollEl.addEventListener("click", function () {
   // 1. Generate a random number between 1-6
   dice = Math.trunc(Math.random() * 6) + 1;
@@ -47,9 +57,21 @@ btnNewEl.addEventListener("click", function () {
   resetGame();
 });
 
+btnHoldEl.addEventListener("click", function () {
+  if (activePlayer === 0) {
+    hold(0);
+  } else {
+    hold(1);
+  }
+});
+
+/*************************************************/
+/*****************   Functions   *****************/
+/*************************************************/
+
 function playerTurn(player) {
   if (dice === 1) {
-    activePlayer = activePlayer === 0 ? 1 : 0; // Switches player
+    toggleActivePlayer();
     currentScore[player] = 0;
   } else {
     currentScore[player] += dice;
@@ -61,13 +83,12 @@ function playerTurn(player) {
     }`
   );
 }
-btnHoldEl.addEventListener("click", function () {
-  if (activePlayer === 0) {
-    hold(0);
-  } else {
-    hold(1);
-  }
-});
+
+function toggleActivePlayer() {
+  activePlayer = activePlayer === 0 ? 1 : 0; // Switches player
+  players[0].classList.toggle("player--active");
+  players[1].classList.toggle("player--active");
+}
 
 function hold(player) {
   // Calculate currentScore + scoreboard score
@@ -82,17 +103,24 @@ function hold(player) {
   currentScore[player] = 0;
 
   //Check for a winner
-  if (Number(scoreEl[player].textContent) >= 100) {
-    console.log(`Player ${player + 1} is the winner`);
+  if (Number(scoreEl[player].textContent) >= 10) {
+    alert(
+      `Player ${player + 1} wins the game with a score of ${
+        scoreEl[player].textContent
+      }!!!  Click Okay to play again!`
+    );
+    resetGame();
   }
 
   // Switches player
-  activePlayer = activePlayer === 0 ? 1 : 0;
+  toggleActivePlayer();
 }
 
 function resetGame() {
   diceEl.classList.add("hidden");
   activePlayer = 0;
+  players[0].classList.add("player--active");
+  players[1].classList.remove("player--active");
 
   for (let i = 0; i < scoreEl.length; i++) {
     currentScore[i] = 0;
