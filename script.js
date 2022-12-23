@@ -22,13 +22,15 @@ const diceEl = document.querySelector(".dice");
 const btnNewEl = document.querySelector(".btn--new");
 const btnRollEl = document.querySelector(".btn--roll");
 const btnHoldEl = document.querySelector(".btn--hold");
+const winnerBox = document.querySelector(".winner-box");
 
 //************************************************/
 //**********   Initializing variables   **********/
 //************************************************/
 let activePlayer = 0;
-let currentScore = [0, 0];
+let currentScore = [0, 0]; // [0] = player1, [1] = player2
 let dice = 0;
+let isGameWon = false;
 scoreEl[0].textContent = "0";
 scoreEl[1].textContent = "0";
 diceEl.classList.add("hidden");
@@ -37,18 +39,20 @@ diceEl.classList.add("hidden");
 //**********   Event Listeners   ***********/
 //******************************************/
 btnRollEl.addEventListener("click", function () {
-  // 1. Generate a random number between 1-6
-  dice = Math.trunc(Math.random() * 6) + 1;
+  if (!isGameWon) {
+    // 1. Generate a random number between 1-6
+    dice = Math.trunc(Math.random() * 6) + 1;
 
-  // 2. Display Dice img
-  diceEl.classList.remove("hidden");
-  diceEl.src = `/img/dice-${dice}.png`;
+    // 2. Display Dice img
+    diceEl.classList.remove("hidden");
+    diceEl.src = `/img/dice-${dice}.png`;
 
-  // 3. Roll die, tally score until 1 is rolled -> at which point switch players
-  if (activePlayer === 0) {
-    playerTurn(0);
-  } else {
-    playerTurn(1);
+    // 3. Roll die, tally score until 1 is rolled -> at which point switch players
+    if (activePlayer === 0) {
+      playerTurn(0);
+    } else {
+      playerTurn(1);
+    }
   }
 });
 
@@ -58,10 +62,12 @@ btnNewEl.addEventListener("click", function () {
 });
 
 btnHoldEl.addEventListener("click", function () {
-  if (activePlayer === 0) {
-    hold(0);
-  } else {
-    hold(1);
+  if (!isGameWon) {
+    if (activePlayer === 0) {
+      hold(0);
+    } else {
+      hold(1);
+    }
   }
 });
 
@@ -92,8 +98,7 @@ function toggleActivePlayer() {
 
 function hold(player) {
   // Calculate currentScore + scoreboard score
-  currentScore[player] =
-    currentScore[player] + Number(scoreEl[player].textContent);
+  currentScore[player] += Number(scoreEl[player].textContent);
 
   // update scoreboard with new score
   scoreEl[player].textContent = `${currentScore[player]}`;
@@ -104,12 +109,15 @@ function hold(player) {
 
   //Check for a winner
   if (Number(scoreEl[player].textContent) >= 100) {
-    alert(
-      `Player ${player + 1} wins the game with a score of ${
-        scoreEl[player].textContent
-      }!!!  Click Okay to play again!`
-    );
-    resetGame();
+    isGameWon = true;
+    diceEl.classList.add("hidden");
+    winnerBox.classList.toggle("hidden");
+    winnerBox.style.display = "flex";
+    winnerBox.textContent = `Player ${
+      player + 1
+    } wins the game with a score of ${
+      scoreEl[player].textContent
+    }!!!  Click the NEW GAME button to play again!`;
   }
 
   // Switches player
@@ -117,10 +125,14 @@ function hold(player) {
 }
 
 function resetGame() {
+  isGameWon = false;
   diceEl.classList.add("hidden");
   activePlayer = 0;
   players[0].classList.add("player--active");
   players[1].classList.remove("player--active");
+
+  diceEl.classList.add("hidden");
+  winnerBox.style.display = "none";
 
   for (let i = 0; i < scoreEl.length; i++) {
     currentScore[i] = 0;
