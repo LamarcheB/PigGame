@@ -103,7 +103,7 @@ function hold(player) {
   currentScore[player] = 0;
 
   //Check for a winner
-  if (Number(scoreEl[player].textContent) >= 10) {
+  if (Number(scoreEl[player].textContent) >= 100) {
     alert(
       `Player ${player + 1} wins the game with a score of ${
         scoreEl[player].textContent
