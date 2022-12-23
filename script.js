@@ -66,7 +66,7 @@ btnHoldEl.addEventListener("click", function () {
 });
 
 //Reset Game
-btnNewEl.addEventListener("click", init());
+btnNewEl.addEventListener("click", init);
 
 /*************************************************/
 /*****************   Functions   *****************/
@@ -105,7 +105,7 @@ function hold(player) {
   currentScore[player] = 0;
 
   //Check for a winner
-  if (Number(scoreEl[player].textContent) >= 100) {
+  if (Number(scoreEl[player].textContent) >= 10) {
     isGameWon = true;
     diceEl.classList.add("hidden");
     winnerBox.classList.toggle("hidden");
