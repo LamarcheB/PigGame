@@ -27,13 +27,11 @@ const winnerBox = document.querySelector(".winner-box");
 //************************************************/
 //**********   Initializing variables   **********/
 //************************************************/
-let activePlayer = 0;
-let currentScore = [0, 0]; // [0] = player1, [1] = player2
-let dice = 0;
-let isGameWon = false;
-scoreEl[0].textContent = "0";
-scoreEl[1].textContent = "0";
-diceEl.classList.add("hidden");
+let activePlayer,
+  dice,
+  isGameWon,
+  currentScore = [0, 0];
+init();
 
 //******************************************/
 //**********   Event Listeners   ***********/
@@ -56,11 +54,7 @@ btnRollEl.addEventListener("click", function () {
   }
 });
 
-btnNewEl.addEventListener("click", function () {
-  //Reset Game
-  resetGame();
-});
-
+// hold points
 btnHoldEl.addEventListener("click", function () {
   if (!isGameWon) {
     if (activePlayer === 0) {
@@ -70,6 +64,9 @@ btnHoldEl.addEventListener("click", function () {
     }
   }
 });
+
+//Reset Game
+btnNewEl.addEventListener("click", init());
 
 /*************************************************/
 /*****************   Functions   *****************/
@@ -124,14 +121,13 @@ function hold(player) {
   toggleActivePlayer();
 }
 
-function resetGame() {
+function init() {
   isGameWon = false;
-  diceEl.classList.add("hidden");
   activePlayer = 0;
+  dice = 0;
+  diceEl.classList.add("hidden");
   players[0].classList.add("player--active");
   players[1].classList.remove("player--active");
-
-  diceEl.classList.add("hidden");
   winnerBox.style.display = "none";
 
   for (let i = 0; i < scoreEl.length; i++) {
